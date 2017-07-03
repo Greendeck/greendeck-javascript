@@ -1,0 +1,32 @@
+<!-- Start of Greendeck Code -->
+<script>
+(function() {
+    var t, i, e,
+        r = ["config", "initialize", "identify", "track", "fetch"],
+        c = function() {
+            var t, i = this;
+            for (i._e = [],i._p = [], t = 0; r.length > t; t++)(function(t) {
+                i[t] = function() {
+                    var _resolve, _reject;
+                    var promise = {}
+                    promise = new Promise(function (resolve, reject){
+                        _reject = reject;
+                        _resolve = resolve;
+                    });
+                    promise.resolve_ex = function (value) {
+                       _resolve(value);
+                    };
+                    promise.reject_ex = function (value) {
+                       _reject(value);
+                    };
+                    i._e.push([t].concat(Array.prototype.slice.call(arguments, 0)));
+                    i._p.push(promise) ;
+                    return promise;
+                }
+            })(r[t])
+        };
+    for (window._w = window._w || {}, t = 0; arguments.length > t; t++) window._w[arguments[t]] = window[arguments[t]] = window[arguments[t]] || new c;
+    i = document.createElement("script"), i.async = 'true', i.src = "//cdn.greendeck.co/sdks/javascript/v1/greendeck.min.js", e = document.getElementsByTagName("script")[0], e.parentNode.insertBefore(i, e)
+})("greendeck");
+</script>
+<!-- End of Greendeck Code -->

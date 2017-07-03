@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Greendeck Demo</title>
+  <!-- Start of Greendeck Code -->
+  <script>
+  !function(){var e,n,t,i=["config","initialize","identify","track","fetch"],c=function(){var e,n=this;for(n._e=[],n._p=[],e=0;i.length>e;e++)!function(e){n[e]=function(){var t,i,c={};return c=new Promise(function(e,n){i=n,t=e}),c.resolve_ex=function(e){t(e)},c.reject_ex=function(e){i(e)},n._e.push([e].concat(Array.prototype.slice.call(arguments,0))),n._p.push(c),c}}(i[e])};for(window._w=window._w||{},e=0;arguments.length>e;e++)window._w[arguments[e]]=window[arguments[e]]=window[arguments[e]]||new c;(n=document.createElement("script")).async="true",n.src="//cdn.greendeck.co/sdks/javascript/v1/greendeck.min.js",(t=document.getElementsByTagName("script")[0]).parentNode.insertBefore(n,t)}("greendeck");
+    
+    greendeck.initialize({
+        client_id: '974ed6f545c73a0ac0a7aa6d5fc0906a3496d8d388a98e9f438f3d',
+        client_secret: '0147c6cbe367fd17d082bae01e9d5573c699b35f30db81efe9'
+    })
+  </script>
+  <!-- End of Greendeck Code -->
+</head>
+<body>
+<script type="text/javascript">
+  greendeck.identify("amazinguser@yourwebsite.com");
+  greendeck.track("Product Viewed",{product_code: 123});
+  greendeck.fetch('rats').then(function(price){
+    console.log(price)
+  });
+</script>
+</body>
+</html>
