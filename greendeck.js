@@ -26,7 +26,7 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
      * Constants
      */
     var VERSION = 11;
-    var ENDPOINT = 'api.greendeck.co/track/';
+    var ENDPOINT = 'staging.greendeck.co/track/';
     var XDM_PARAM_NAME = '__greendeckid';
 
     /**
@@ -780,12 +780,12 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
 
         this.options = {
             app: 'js-client',
-            baseUrl: 'http://api.greendeck.co/api/v1',
+            baseUrl: 'http://staging.greendeck.co/api/v1',
             client_id: '',
             client_secret: '',
             use_cookies: true,
             ping: true,
-            ping_interval: 12000,
+            ping_interval: 15000,
             idle_timeout: 300000,
             idle_threshold: 10000,
             download_pause: _download_pause || 200,
@@ -919,7 +919,7 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
                 this.config('cookie_path'),
                 this.config('cookie_domain')
             );
-           
+
 
             this.dirtyCookie = true;
         },
@@ -1089,8 +1089,8 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
 
             return endpoint;
         },
-        authenticate: function(force){ 
-            //check if auth_token is present in cookies or else get 
+        authenticate: function(force){
+            //check if auth_token is present in cookies or else get
             var stored_cookie = JSON.parse(this.getCookie());
             // if auth is not setup
             if ( this.getCookie()== null || typeof (stored_cookie["auth"]) === 'undefined' || force) {
@@ -1120,7 +1120,7 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
                         this1.config('cookie_domain')
                     );
                 });
-            } 
+            }
         },
         apiRequest: function (url, params, method){
          var this1 = this
@@ -1130,7 +1130,7 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
             //adding person code to the request
             var stored_id_cookie = JSON.parse(docCookies.getItem('gdIdentifier'));
             params["person_code"]= stored_id_cookie["person_code"]
-            
+
            	var promise = new Promise(function (resolve, reject){
 		        function wait(){
 		       	  stored_cookie = JSON.parse(this1.getCookie());
@@ -1139,7 +1139,7 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
 				  } else {
 				    axios({
                       method: method,
-                      baseURL: 'http://api.greendeck.co/api/v1',
+                      baseURL: 'http://staging.greendeck.co/api/v1',
                       url:url,
                       data: params,
                       headers: {'Authorization': 'Bearer ' + stored_cookie['auth']}
@@ -1153,7 +1153,9 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
 		    return promise
         },
         initialize: function(key, value){
-            this.config(key,value)
+            this.config(key,value);
+            // pinging to track the sessions of the users
+            this.startPing();
         },
         /**
          * Sets configuration options
@@ -1187,7 +1189,7 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
 
             }
 
-            
+
             return data;
         },
 
@@ -1206,9 +1208,9 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
             return this._dataSetter(this.visitorData, key, value);
         },
         identify: function(person_code,properties) {
-            
+
             this._dataSetter(this.userData, "person_code", person_code);
-            
+
             //First check what is stored in the cookies
             var stored_id_cookie = JSON.parse(docCookies.getItem('gdIdentifier'));
             if (!stored_id_cookie){stored_id_cookie={}}
@@ -1223,7 +1225,7 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
             // Case b: the new identifier is same as old
                  //b.1: if key and value exists: then just send a PUT req to update ppt
                  //b.2: else do nothing
-            // Case c: new != old 
+            // Case c: new != old
                 //c.1: old == _greendeck_guest -> call alias api -> PUT req to update ppt
                 //c.2: old != _greendeck_guest
 
@@ -1277,9 +1279,9 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
                     //case c.1
                     var this1 = this
                     if(stored_id_cookie["person_code"].startsWith('greendeck_guest_')){
-                        //call alias api 
+                        //call alias api
                         var alias = { "person":{"new_person_code": person_code}}
-                        this.apiRequest("/people/alias?person_code="+ stored_id_cookie["person_code"] , alias, "PUT").then(function(){    
+                        this.apiRequest("/people/alias?person_code="+ stored_id_cookie["person_code"] , alias, "PUT").then(function(){
                             this1.reset('gdIdentifier')
                             id_cookie = JSON.stringify({
                                 person_code: person_code
@@ -1324,7 +1326,7 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
                 e.event.event_name = name
                 e.event.person_code= stored_id_cookie["person_code"]
                 return this.apiRequest('/events',e,"POST")
-            }
+            };
         },
         transact: function(productCode,quantity,price,properties){
             if(typeof quantity != 'undefined' && typeof price != 'undefined'
@@ -1594,6 +1596,7 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
             if (typeof this.pingInterval === 'undefined') {
                 this.pingInterval = window.setInterval(function() {
                     self.ping();
+                    console.log('ping kiya')
                 }, this.config('ping_interval'));
             }
         },
@@ -1612,9 +1615,11 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
             var now;
 
             if (this.config('ping') && this.idle < this.config('idle_timeout')) {
-                this._push({
-                    endpoint: 'ping'
-                });
+                //this._push({
+                //    endpoint: 'ping'
+                //});
+                var user = this.userData
+                this.apiRequest("/people/session?person_code=" + user.person_code, {}, "POST")
             }
             else {
                 this.stopPing();
@@ -1725,7 +1730,7 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
                     this.config('cookie_domain')
                 );
             }
-            
+
             this.cookie = null;
             this._setupCookie();
         },
@@ -1912,7 +1917,7 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
             if (_queue.hasOwnProperty(name)) {
                 var instance = new Tracker(name);
                 instance.init();
-                
+
 
                 // DO NOT REMOVE
                 // compatibility with old tracker and chat
