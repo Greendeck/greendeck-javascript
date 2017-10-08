@@ -26,7 +26,7 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
      * Constants
      */
     var VERSION = 11;
-    var ENDPOINT = 'staging.greendeck.co/track/';
+    var ENDPOINT = 'api.greendeck.co/track/';
     var XDM_PARAM_NAME = '__greendeckid';
 
     /**
@@ -780,7 +780,7 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
 
         this.options = {
             app: 'js-client',
-            baseUrl: 'http://staging.greendeck.co/api/v1',
+            baseUrl: 'http://api.greendeck.co/api/v1',
             client_id: '',
             client_secret: '',
             use_cookies: true,
@@ -1139,7 +1139,7 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
 				  } else {
 				    axios({
                       method: method,
-                      baseURL: 'http://staging.greendeck.co/api/v1',
+                      baseURL: 'http://api.greendeck.co/api/v1',
                       url:url,
                       data: params,
                       headers: {'Authorization': 'Bearer ' + stored_cookie['auth']}
