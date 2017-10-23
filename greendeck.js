@@ -1139,7 +1139,7 @@ e.exports=function(e){return null!=e&&(n(e)||r(e)||!!e._isBuffer)}},function(e,t
 				  } else {
 				    axios({
                       method: method,
-                      baseURL: 'http://api.greendeck.co/api/v1',
+                      baseURL: this1.config('baseUrl'),
                       url:url,
                       data: params,
                       headers: {'Authorization': 'Bearer ' + stored_cookie['auth']}
